@@ -1,0 +1,16 @@
+extend layout
+block content
+  center 
+    input#phone_autodn(type="search", placeholder="AutoReg Phone DN")
+    input#phone_realdn(type="search", placeholder="Real Phone DN")
+    input#phone_mac(type="search", placeholder="Phone MAC")
+    
+    br
+    a(class='modern' onclick="checkInput()")
+      | Install Phone
+    h2#results
+
+    script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js")
+    script(src="/javascripts/spin.js")
+    script(src="/javascripts/main.js")
+ 
