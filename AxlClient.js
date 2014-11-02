@@ -7,7 +7,7 @@ var sys = require('sys');
 var AxlClient = function(ip,username,password) {
     
     
-  this.soap = new require('node-soap');
+  this.soap = new require('axl-node-soap');
   this.reqid = 0;
   this.client=null;
   this.ip = ip;
@@ -39,6 +39,8 @@ AxlClient.prototype.setClient = function(c)
 {
     this.client = c;
 }
+
+
 AxlClient.prototype.getClient = function()
 {
     return this.client;

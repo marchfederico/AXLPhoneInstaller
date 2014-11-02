@@ -1,14 +1,19 @@
 extend layout
 block content
-  center 
-    input#phone_autodn(type="search", placeholder="AutoReg Phone DN")
-    input#phone_realdn(type="search", placeholder="Real Phone DN")
-    input#phone_mac(type="search", placeholder="Phone MAC")
+  input#isreg(type="checkbox" padding='0px' checked='checked' onclick="onCheck()")
+  |Check here if phone was never auto regestered
+  .fancy
+    center 
+      input#phone_autodn(type="search", placeholder="AutoReg Phone DN"  )
+      br
+      input#phone_realdn(type="search", placeholder="Real Phone DN")
+      br
+      input#phone_mac(type="search", placeholder="Real Phone MAC" hidden='true')
     
-    br
-    a(class='modern' onclick="checkInput()")
-      | Install Phone
-    h2#results
+      br
+      a(class='modern' onclick="checkInput()")
+        | Install Phone
+      h2#results
 
     script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js")
     script(src="/javascripts/spin.js")

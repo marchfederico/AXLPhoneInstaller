@@ -19,6 +19,24 @@ var opts = {
 var target = document.getElementById('results');
 var spinner = new Spinner(opts);
 
+function onCheck()
+{
+    var isChecked =  $('#isreg').prop('checked');
+    if (isChecked)
+    {
+        $('#phone_autodn').hide();
+        $('#phone_autodn').val("");
+        $('#phone_mac').show();
+    }
+    else
+    {
+        $('#phone_autodn').show();
+        $('#phone_mac').val("");
+        $('#phone_mac').hide();
+    }
+    
+}
+
 function checkInput()
 {
      var mac = $('#phone_mac').val().toUpperCase();

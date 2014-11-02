@@ -9,8 +9,6 @@ var events =require('events');
 var sys = require('sys');
 var AxlClient = require('./AxlClient');
 
-var reqArray ={};
-var macArray ={};
 
 var updatePhoneReq = {
          name: '%',
@@ -25,11 +23,7 @@ axl.init();
 axl.on("initialized",function(client) {
     var self = this
     self.client.setSecurity(new self.soap.BasicAuthSecurity(self.username, self.password));
-  
-    
-  
     console.log("Axl Initialized");
-    
 });
 
 axl.on("error",function(err) {
@@ -119,66 +113,65 @@ var PhoneInstaller = function() {
     var self = this;
     app = this;
     this.reqid = 0;
-   this.res= null;
+    this.res= null;
     
-self.compile = function(str, path) {
-  return stylus(str)
-    .set('filename', path)
-    .use(nib())
-}
+    self.compile = function(str, path) {
+      return stylus(str)
+        .set('filename', path)
+        .use(nib())
+    }
 
 
        
-self.initializeServer = function() {
-this.app = express()
+    self.initializeServer = function() {
+        
+        this.app = express()
+        this.app.set('views', __dirname + '/views')
+        this.app.set('view engine', 'jade')
+        
+        this.app.use(stylus.middleware(
+          { src: __dirname + '/public'
+          , compile: this.compile
+          }
+        ))
+        
+        this.app.use(express.static(__dirname + '/public'))
 
-this.app.set('views', __dirname + '/views')
-this.app.set('view engine', 'jade')
-//app.use(express.logger('dev'))
-this.app.use(stylus.middleware(
-  { src: __dirname + '/public'
-  , compile: this.compile
-  }
-))
-this.app.use(express.static(__dirname + '/public'))
+        this.app.get('/', function (req, res) {
+          res.render('index',
+          { title : 'Home' }
+          )
+        })
+        
+        this.app.get('/changeMac', function(req, res){
+         // input value from search
+            var mac = req.query.mac;
+            var dn = req.query.dn;
+            var autodn = req.query.autodn;
+            var type = 1;
+            var sql={}  
+            sql[2] = {sql: 'SELECT  device.name, dnorpattern FROM Device, DeviceNumPlanMap, NumPlan WHERE DeviceNumPlanMap.fkNumPlan = NumPlan.pkid AND device.pkid=DeviceNumPlanMap.fkDevice AND NumPlan.dnorpattern ="'+dn+'"'}
 
-this.app.get('/', function (req, res) {
-  res.render('index',
-  { title : 'Home' }
-  )
-})
-this.app.get('/changeMac', function(req, res){
- // input value from search
- var mac = req.query.mac;
- var dn = req.query.dn;
- var autodn = req.query.autodn;
-  var type = 1;
-var sql={}  
-sql[2] = {sql: 'SELECT  device.name, dnorpattern FROM Device, DeviceNumPlanMap, NumPlan WHERE DeviceNumPlanMap.fkNumPlan = NumPlan.pkid AND device.pkid=DeviceNumPlanMap.fkDevice AND NumPlan.dnorpattern ="'+dn+'"'}
+            sql[1] = {sql: 'SELECT  device.name, dnorpattern FROM Device, DeviceNumPlanMap, NumPlan WHERE DeviceNumPlanMap.fkNumPlan = NumPlan.pkid AND device.pkid=DeviceNumPlanMap.fkDevice AND NumPlan.dnorpattern ="'+autodn+'"'}
 
-sql[1] = {sql: 'SELECT  device.name, dnorpattern FROM Device, DeviceNumPlanMap, NumPlan WHERE DeviceNumPlanMap.fkNumPlan = NumPlan.pkid AND device.pkid=DeviceNumPlanMap.fkDevice AND NumPlan.dnorpattern ="'+autodn+'"'}
+            console.log("%j",req.query)
+            if (mac === "")
+                type =1
+            else if (autodn === "")
+                type =2
 
-console.log("%j",req.query)
-if (mac === "")
-    type =1
-else if (autodn === "")
-    type =2
-    
-    
-var udata = {'res':res,'mac':mac,'dn':dn,'autodn':autodn,'type':type};
 
- reqid = axl.request("executeSQLQuery",sql[type],udata);
-    console.log("request id = "+reqid)
-    reqArray[reqid] = res;
-    macArray[reqid] = mac;
-   
- }) 
+            var udata = {'res':res,'mac':mac,'dn':dn,'autodn':autodn,'type':type};
 
- };
- 
-self.startServer = function() {
-    this.app.listen(3000)
-}
+             reqid = axl.request("executeSQLQuery",sql[type],udata);
+                console.log("request id = "+reqid)
+        }) 
+
+     };
+
+    self.startServer = function() {
+        this.app.listen(3000)
+    }
 
 }
 
