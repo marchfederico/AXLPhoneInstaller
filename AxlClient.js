@@ -1,7 +1,6 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; 
 //process.env.NODE_DEBUG = 'request http soap';
 var events =require('events');
-var wait=require('wait.for');
 var sys = require('sys');
 
 var AxlClient = function(ip,username,password) {
